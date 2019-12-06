@@ -3,6 +3,12 @@
 
 #include <bits/stdc++.h>
 
-typedef std::pair<int, std::string> error;
+class error {
+public:
+    int         status;
+    std::string message;
 
+    error(int         status,
+          std::string message);
+};
 #endif
