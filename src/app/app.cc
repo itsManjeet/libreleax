@@ -48,7 +48,7 @@ App::print_help()
     std::cout << "\b\b ]" << std::endl;
     std::cout << std::endl << "Description: " << this->desc << std::endl;
 
-    std::cout << "Usage:" << std::endl;
+    std::cout << "\nUsage:" << std::endl;
     for (Sub sub: this->subs) {
         std::cout << sub.display() << std::endl;
     }
@@ -66,17 +66,13 @@ App::execute(int argc, char** argv)
         if (arg == "--version" || 
             arg == "-v") {
                 std::cout << "Version: " << this->version << "." << this->release << std::endl;
-                error e;
-                e.first = 0;
-                return e;
+                return error(0,"success");
         }
 
         if (arg == "--help" || 
             arg == "-h") {
                 this->print_help();
-                error e;
-                e.first = 0;
-                return e;
+                return error(0,"success");
         }
 
         if (argv[i][0] == '-') {
@@ -97,11 +93,8 @@ App::execute(int argc, char** argv)
     }
 
     if (!task_found && this->func == nullptr) {
-        error e;
-        e.first = 1;
-        e.second = "invalid task";
         this->print_help();
-        return e;
+        return error(1,"invalid task");
 
     } else {
         if (task_found) {
@@ -111,10 +104,7 @@ App::execute(int argc, char** argv)
         }
     }
     this->print_help();
-    error e;
-    e.first = 1;
-    e.second = "invalid task";
-    return e;
+    return error(1,"invalid task");
 }
 
 Author::Author(std::string name,
