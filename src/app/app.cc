@@ -80,15 +80,20 @@ App::execute(int argc, char** argv)
             this->flags.push_back(argv[i]);
             continue;
         }
-
+        
+        bool is_task = false;
         for (auto sub: this->subs) {
             if (sub.name == argv[i] &&
                 ! task_found) {
                 task_found = true;
+                is_task = true;
                 task = sub;
-            } else {
-                this->args.push_back(argv[i]);
+                break;
             }
+        }
+
+        if (!is_task) {
+            this->args.push_back(argv[i]);
         }
     }
 
