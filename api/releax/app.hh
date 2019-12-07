@@ -2,6 +2,22 @@
 #define APP_H
 
 #include "releax.hh"
+#include <glibmm.h>
+#include <gtkmm.h>
+
+class UiWindow : public Gtk::ApplicationWindow {
+public:
+    UiWindow(BaseObjectType* obj, Glib::RefPtr<Gtk::Builder> const& builder)
+        : Gtk::ApplicationWindow(obj)
+        , builder{builder}
+    {
+    }
+
+    virtual ~UiWindow() = default;
+
+private:
+    Glib::RefPtr<Gtk::Builder> builder;
+};
 
 class Sub {
 public:
@@ -42,6 +58,11 @@ public:
     error (*func)(std::vector<std::string> args,
                   std::vector<std::string> flags);
 
+    Glib::RefPtr<Gtk::Application> ui_app;
+    Glib::RefPtr<Gtk::Builder> builder;
+    UiWindow *window = nullptr;
+
+
     App(std::string name, 
         float       version,
         char        release,
@@ -52,6 +73,9 @@ public:
                  std::string usage,
                  error (*func)(std::vector<std::string> args,
                                std::vector<std::string> flags));
+
+    void add_ui(std::string app_id,
+                std::string ui_file);
 
     void add_author(std::string name,
                     std::string email,
