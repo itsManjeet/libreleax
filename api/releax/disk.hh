@@ -3,6 +3,10 @@
 
 #include "releax.hh"
 
+namespace disk {
+    std::list<std::string> get_disk();
+}
+
 class Part {
     std::string part_name,
                 uuid,

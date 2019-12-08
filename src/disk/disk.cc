@@ -1,5 +1,19 @@
 #include <releax/disk.hh>
 #include <blkid/blkid.h>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+std::list<std::string>
+disk::get_disk()
+{
+    std::list<std::string> all_disk;
+    std::string path = "/sys/block/";
+    for (const auto &entry : fs::directory_iterator(path)) {
+        all_disk.push_front(entry.path().filename());
+    }
+    return all_disk;
+}
 
 Disk::Disk(std::string disk_name) 
 {
