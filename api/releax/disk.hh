@@ -8,23 +8,25 @@ namespace disk {
 }
 
 class Part {
+public:
     std::string part_name,
                 uuid,
                 label,
                 type;
-public:
+    unsigned long long int size;
     Part(std::string part_name,
               std::string uuid,
               std::string label,
-              std::string type);
+              std::string type,
+              unsigned long long int size);
 
     std::string display();
 };
 
 class Disk {
-    std::string disk_name;
-    std::vector<Part> parts;
 public:
+    std::string disk_name;
+    std::list<Part> parts;
     Disk(std::string disk_name);
     void display();
     error load();  

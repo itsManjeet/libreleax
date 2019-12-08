@@ -42,7 +42,6 @@ Disk::load()
     const char *uuid;
     const char *label;
     const char *type;
-
     for (int i = 0; i < npart; i++) {
         std::string dev_name = disk_name + std::to_string(i+1);
 
@@ -52,12 +51,14 @@ Disk::load()
         blkid_probe_lookup_value(pr,"UUID", &uuid, NULL);
         blkid_probe_lookup_value(pr,"LABEL",&label,NULL);
         blkid_probe_lookup_value(pr,"TYPE",&type, NULL);
+        unsigned long long int size = blkid_probe_get_size(pr)/1024;
 
         Part prt = Part(
             dev_name,
             uuid,
             label,
-            type
+            type,
+            size
         );
         uuid = ""; label = ""; type = "";
         this->parts.push_back(prt);
@@ -79,12 +80,14 @@ Disk::display()
 Part::Part (std::string part_name,
             std::string uuid,
             std::string label,
-            std::string type)
+            std::string type,
+            unsigned long long int size)
 {
     this->part_name = part_name;
     this->uuid      = uuid;
     this->label     = label;
     this->type      = type;
+    this->size      = size;
 }
 
 std::string
