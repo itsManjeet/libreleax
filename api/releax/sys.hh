@@ -6,6 +6,8 @@
 namespace sys
 {
     std::string execute(std::string cmd);
+
+    bool check_su();
 } // namespace sys
 
 #endif
