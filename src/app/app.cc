@@ -9,6 +9,8 @@ App::App(std::string name,
     this->version = version;
     this->release = release;
     this->desc    = desc;
+
+    this->func = nullptr;
 }
 
 
@@ -60,20 +62,17 @@ App::execute(int argc, char** argv)
 {
     bool task_found = false;
     Sub task;
-    if (argc == 1) {
-        if (this->func == nullptr) {
-            if (this->window == nullptr) {
+    if (argc <= 1) {
+        if (this->window != nullptr)
+            this->ui_app->run(*window);
+        else {
+            if (this->func != nullptr)
+                this->func();
+            else
                 this->print_help();
-                return error(0,"");
-            } else {
-                auto r = this->ui_app->run(*window);
-                return error(r,"error");
-            }
-        } else {
-            return this->func(this->args,this->flags);
         }
+        return error(0,"");
     } else {
-
          for (int i = 1; i < argc; i++) {
             std::string arg = argv[i];
 
@@ -116,12 +115,12 @@ App::execute(int argc, char** argv)
     if (task_found) {
         return task.func(args, flags);
     } else {
-        if (this->func == nullptr) {
+        if (this->func != nullptr)
+            this->func();
+        else
             print_help();
-            return error(0,"");
-        } else {
-            return this->func(args, flags);
-        }
+        
+        return error(0,"");
     }
 }
 
