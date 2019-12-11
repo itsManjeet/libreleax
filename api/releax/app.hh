@@ -55,8 +55,7 @@ public:
     float       version;
     char        release;
     std::string desc;
-    error (*func)(std::vector<std::string> args,
-                  std::vector<std::string> flags);
+    void (*func)();
 
     Glib::RefPtr<Gtk::Application> ui_app;
     Glib::RefPtr<Gtk::Builder> builder;
