@@ -10,7 +10,11 @@ disk::get_disk()
     std::list<std::string> all_disk;
     std::string path = "/sys/block/";
     for (const auto &entry : fs::directory_iterator(path)) {
-        all_disk.push_front(entry.path().filename());
+        std::string disk_name = entry.path().filename();
+        if (disk_name[0] == 's' &&      // SoftDisk
+            disk_name[1] == 'd') {      // list all sd 
+            all_disk.push_front(entry.path().filename());
+        }
     }
     return all_disk;
 }
