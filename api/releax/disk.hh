@@ -3,16 +3,13 @@
 
 #include "releax.hh"
 
-namespace disk {
-    std::list<std::string> get_disk();
-}
-
 class Part {
 public:
     std::string part_name,
                 uuid,
                 label,
                 type;
+    int status = 1;
     unsigned long long int size;
     Part(std::string part_name,
               std::string uuid,
@@ -20,15 +17,14 @@ public:
               std::string type,
               unsigned long long int size);
 
+    Part();
+
     std::string display();
 };
 
-class Disk {
-public:
-    std::string disk_name;
-    std::list<Part> parts;
-    Disk(std::string disk_name);
-    void display();
-    error load();  
-};
+namespace disk {
+    std::list<std::string> get_all_part();
+    Part load_part(std::string part_name);
+}
+
 #endif
