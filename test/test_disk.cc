@@ -4,11 +4,13 @@
 using namespace std;
 
 int main() {
-    Disk d = Disk("/dev/sda");
-    error err = d.load();
-    if (err.status != 0) {
-        cout << err.message << endl;
+    
+    auto all_part = disk::get_all_part();
+    for (auto prt : all_part) {
+        auto p = disk::load_part(prt);
+        cout << p.display() << endl;
     }
 
-    d.display();
+    cout << "Done" << endl;
+    return 0;
 }
