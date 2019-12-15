@@ -1,85 +1,44 @@
 #include <releax/disk.hh>
-#include <blkid/blkid.h>
+#include <releax/filesys.hh>
+#include <releax/sys.hh>
 #include <filesystem>
+#include <cstdlib>
 
 namespace fs = std::filesystem;
 
 std::list<std::string>
-disk::get_disk()
+disk::get_all_part()
 {
     std::list<std::string> all_disk;
-    std::string path = "/sys/block/";
+    std::string path = "/sys/class/block/";
     for (const auto &entry : fs::directory_iterator(path)) {
         std::string disk_name = entry.path().filename();
-        if (disk_name[0] == 's' &&      // SoftDisk
-            disk_name[1] == 'd') {      // list all sd 
+        if (filesys::exist(path + "/" + disk_name + "/partition")) {      // list all with partition
             all_disk.push_front(entry.path().filename());
         }
     }
+    all_disk.sort();
     return all_disk;
 }
 
-Disk::Disk(std::string disk_name) 
+Part
+disk::load_part(std::string part_name)
 {
-    this->disk_name = disk_name;
-}
-
-error
-Disk::load()
-{
-    blkid_probe pr = blkid_new_probe_from_filename(this->disk_name.c_str());
-    if (pr == NULL) {
-        error(1,"failed to open " + disk_name);
-    }
-
-    blkid_partlist partlist;
-    int npart, i;
+    std::string path = "/sys/class/block/" + part_name;
+    if (!filesys::exist(path)) return Part();
     
-    partlist = blkid_probe_get_partitions(pr);
-    npart = blkid_partlist_numof_partitions(partlist);
-
-    if (npart <= 0) {
-        return error(2,"invalid disk name " + disk_name);
-    }
-
+    std::string size = sys::execute("cat " + path + "/size");
+    size = size.substr(0,size.size() - 2);
+    unsigned long long int size_int = atoi(size.c_str());
+    auto prt = Part("/dev/" + part_name,
+        "",
+        "",
+        "",
+        size_int);
     
-    const char *uuid;
-    const char *label;
-    const char *type;
-    for (int i = 0; i < npart; i++) {
-        std::string dev_name = disk_name + std::to_string(i+1);
-
-        pr = blkid_new_probe_from_filename(dev_name.c_str());
-        blkid_do_probe(pr);
-
-        blkid_probe_lookup_value(pr,"UUID", &uuid, NULL);
-        blkid_probe_lookup_value(pr,"LABEL",&label,NULL);
-        blkid_probe_lookup_value(pr,"TYPE",&type, NULL);
-        unsigned long long int size = blkid_probe_get_size(pr)/1024;
-
-        Part prt = Part(
-            dev_name,
-            uuid,
-            label,
-            type,
-            size
-        );
-        uuid = ""; label = ""; type = "";
-        this->parts.push_back(prt);
-    }
-
-    blkid_free_probe(pr);
-    return error(0,"success");
+    return prt;
 }
 
-void
-Disk::display()
-{
-    std::cout << "Disk: " << this->disk_name << std::endl;
-    for (auto part:this->parts) {
-        std::cout << "   |- " << part.display() << std::endl;
-    }
-}
 
 Part::Part (std::string part_name,
             std::string uuid,
@@ -92,6 +51,12 @@ Part::Part (std::string part_name,
     this->label     = label;
     this->type      = type;
     this->size      = size;
+    this->status    = 0;
+}
+
+Part::Part()
+{
+    this->status = -1;
 }
 
 std::string
