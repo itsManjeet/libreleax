@@ -7,65 +7,44 @@
 
 using namespace std;
 
-error
-wget_main(vector<string> args,
-         vector<string> flags)
+int
+wget_main(App* app)
 {
-    cout << "download from url: " << endl;
+    cout << "download from url: "  << endl;
 
-    return error(0,"success");
+    return 0;
 }
 
 
-error
-wget_sub_from_ftp(vector<string> args,
-                  vector<string> flags)
+int
+wget_sub_from_ftp(App* app)
 {
     cout << "download ftp from url: " <<  endl;
-    return error(0,"success");
+    return 0;
 }
 
 int
 main (int   argc, 
      char** argv)
 {
-    /* Declare new app */
-    auto wget = App(
-        "wget",                       // app name
-        0.1 , 'a',                    // 0.1 = major.minor version |  'a' = release [a = alpha, b = beta, s = stable]
-        "wget is a simple implementation of unix wget with app.hh releax api"  // descriptions for app
-    );
+    auto app = new App();
 
-    /* Add Authors 
-     * add_author can add any number of authors for the app
-     */
-    wget.add_author(
-        "Manjeet Saini",
-        "itsmanjeet@releax.in",
-        "Lead Developer at releax os"
-    );
+    app->name("Sample app")
+       ->version(0.1)
+       ->release('a')
+       ->desc("This is a sample app")
+       ->author("Manjeet Saini","itsmanjeet@releax.in","-")
+       ->author("Another Author","another@releax.in","-")
+       ->main_func(wget_sub_from_ftp)
+       ->sub("download",
+             "to download file",
+             "[URL]",
+             wget_main);
 
-    wget.add_author(
-        "Another Author",
-        "another@releax.in",
-        "Another Author for testing"
-    );
-
-    /* Main Function */
-    wget.func = wget_main;
-
-    /* Sub commands */
-    wget.add_sub(
-        "from-ftp",                                 // Argument name from which you want to call
-        "to Download all file from ftp addresss",   // Sub Command description
-        "[URL] -o [OUTPUT]",                        // Usage for help
-        wget_sub_from_ftp
-    );
-    // Similarly more sub commands can be add
 
     /* Execute Command*/
-    error err = wget.execute(argc,argv);
-    if (err.status != 0) {
-        cout << "err: " << err.message << endl;
+    int err = app->execute(argc,argv);
+    if (err != 0) {
+        cout << "err: " << err << endl;
     }
 }
