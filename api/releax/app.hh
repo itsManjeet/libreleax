@@ -4,6 +4,7 @@
 #include "releax.hh"
 #include <glibmm.h>
 #include <gtkmm.h>
+#include "config.hh"
 
 class Sub;
 class UiWindow : public Gtk::ApplicationWindow {
@@ -37,16 +38,17 @@ public:
 class App {
 
 private:
-    std::list<Sub>         subs;
-    std::list<Author>      authors;
+    std::vector<Sub>         subs;
+    std::vector<Author>      authors;
 public:
     std::string Name;
     float       Version;
     char        Release;
     std::string Desc;
+    Config*     cfg;
     int (*func)(App* this_app);
-    std::list<std::string> flags;
-    std::list<std::string> args;
+    std::vector<std::string> flags;
+    std::vector<std::string> args;
 
     Glib::RefPtr<Gtk::Application> ui_app;
     Glib::RefPtr<Gtk::Builder> builder;
