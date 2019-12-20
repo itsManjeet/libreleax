@@ -5,6 +5,7 @@
 #include <glibmm.h>
 #include <gtkmm.h>
 
+class Sub;
 class UiWindow : public Gtk::ApplicationWindow {
 public:
     UiWindow(BaseObjectType* obj, Glib::RefPtr<Gtk::Builder> const& builder)
@@ -19,16 +20,6 @@ private:
     Glib::RefPtr<Gtk::Builder> builder;
 };
 
-class Sub {
-public:
-    std::string name,
-                desc,
-                usage;
-    error (*func)(std::vector<std::string> args,
-                  std::vector<std::string> flags);
-
-    std::string display();
-};
 
 class Author {
 public:
@@ -46,44 +37,53 @@ public:
 class App {
 
 private:
-    std::vector<Sub>         subs;
-    std::vector<Author>      authors;
-    std::vector<std::string> flags;
-    std::vector<std::string> args;
+    std::list<Sub>         subs;
+    std::list<Author>      authors;
 public:
-    std::string name;
-    float       version;
-    char        release;
-    std::string desc;
-    void (*func)();
+    std::string Name;
+    float       Version;
+    char        Release;
+    std::string Desc;
+    int (*func)(App* this_app);
+    std::list<std::string> flags;
+    std::list<std::string> args;
 
     Glib::RefPtr<Gtk::Application> ui_app;
     Glib::RefPtr<Gtk::Builder> builder;
     UiWindow *window = nullptr;
 
 
-    App(std::string name, 
-        float       version,
-        char        release,
-        std::string desc);
-
-    void add_sub(std::string name,
-                 std::string desc,
-                 std::string usage,
-                 error (*func)(std::vector<std::string> args,
-                               std::vector<std::string> flags));
+    App* name(std::string name);
+    App* version(float version);
+    App* release(char release);
+    App* desc(std::string desc);
+    App* main_func(int (*func)(App* this_app));
+    App* sub(std::string name,
+             std::string desc,
+             std::string usage,
+             int (*func)(App* this_app));
 
     void add_ui(std::string app_id,
                 std::string ui_file);
 
-    void add_author(std::string name,
-                    std::string email,
-                    std::string about);
+    App* author(std::string name,
+                std::string email,
+                std::string about);
 
     void print_help();
 
 
-    error execute(int argc, char** argv);
+    int execute(int argc, char** argv);
+};
+
+class Sub {
+public:
+    std::string name,
+                desc,
+                usage;
+    int (*func)(App* this_app);
+
+    std::string display();
 };
 
 #endif
