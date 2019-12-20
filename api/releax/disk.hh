@@ -10,7 +10,7 @@ public:
                 label,
                 type;
     int status = 1;
-    unsigned long long int size;
+    size_t size;
     Part(std::string part_name,
               std::string uuid,
               std::string label,
