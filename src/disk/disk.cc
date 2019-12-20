@@ -28,8 +28,9 @@ disk::load_part(std::string part_name)
     if (!filesys::exist(path)) return Part();
     
     std::string size = sys::execute("cat " + path + "/size");
-    size = size.substr(0,size.size() - 2);
-    unsigned long long int size_int = atoi(size.c_str());
+    std::stringstream ss(size);
+    size_t size_int =  0;
+    ss >> size_int;
     auto prt = Part("/dev/" + part_name,
         "",
         "",
