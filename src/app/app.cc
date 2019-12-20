@@ -170,15 +170,18 @@ Sub::display()
     return "    " + this->name + " " + this->usage  + "\t\t" + this->desc;
 }
 
-void
-App::add_ui(std::string app_id,
-            std::string ui_file)
+App*
+App::ui(std::string app_id,
+        std::string ui_file)
 {
     int argc = 1;
     char** argv = (char**)malloc(1*sizeof(char*));
     argv[0] = "apportunity";
+
     this->ui_app = Gtk::Application::create(argc, argv, app_id);
     this->builder = Gtk::Builder::create();
     this->builder->add_from_file(ui_file);
     this->builder->get_widget_derived("main_window",window);
+
+    return this;
 }

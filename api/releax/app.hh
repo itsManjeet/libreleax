@@ -65,8 +65,8 @@ public:
              std::string usage,
              int (*func)(App* this_app));
 
-    void add_ui(std::string app_id,
-                std::string ui_file);
+    App* ui(std::string app_id,
+            std::string ui_file);
 
     App* author(std::string name,
                 std::string email,
