@@ -1,25 +1,38 @@
 #include <releax/app.hh>
 
-App::App(std::string name,
-         float       version,
-         char        release,
-         std::string desc)
+App*
+App::name(std::string name)
 {
-    this->name    = name;
-    this->version = version;
-    this->release = release;
-    this->desc    = desc;
-
-    this->func = nullptr;
+    this->Name = name;
+    return this;
 }
 
+App*
+App::version(float version)
+{
+    this->Version = version;
+    return this;
+}
 
-void
-App::add_sub(std::string name,
-             std::string desc,
-             std::string usage,
-             error (*func)(std::vector<std::string> args,
-                           std::vector<std::string> flags))
+App*
+App::release(char release)
+{
+    this->Release = release;
+    return this;
+}
+
+App*
+App::desc(std::string desc)
+{
+    this->Desc = desc;
+    return this;
+}
+
+App*
+App::sub(std::string name,
+         std::string desc,
+         std::string usage,
+         int (*func)(App* this_app))
 {
     Sub new_sub;
     new_sub.name = name;
@@ -28,27 +41,37 @@ App::add_sub(std::string name,
     new_sub.func = func;
 
     this->subs.push_back(new_sub);
+    return this;
+
 }
 
 
-void
-App::add_author(std::string name,
-                std::string email,
-                std::string about)
+App*
+App::author(std::string name,
+            std::string email,
+            std::string about)
 {
-    Author new_author(name, email,about);
+    Author new_author(name,email,about);
     this->authors.push_back(new_author);
+    return this;
+}
+
+App*
+App::main_func(int (*func)(App* this_app))
+{
+    this->func = func;
+    return this;
 }
 
 void
 App::print_help()
 {
-    std::cout << this->name << " " << this->version  << "." << this->release << " [ ";
+    std::cout << this->Name << " " << this->Version  << "." << this->Release << " [ ";
     for (Author author: this->authors) {
         std::cout << author.display() << ", ";
     }
     std::cout << "\b\b ]" << std::endl;
-    std::cout << std::endl << "Description: " << this->desc << std::endl;
+    std::cout << std::endl << "Description: " << this->Desc << std::endl;
 
     std::cout << "\nUsage:" << std::endl;
     for (Sub sub: this->subs) {
@@ -57,7 +80,7 @@ App::print_help()
 }
 
 
-error
+int
 App::execute(int argc, char** argv)
 {
     bool task_found = false;
@@ -66,26 +89,28 @@ App::execute(int argc, char** argv)
         if (this->window != nullptr)
             this->ui_app->run(*window);
         else {
-            if (this->func != nullptr)
-                this->func();
+            if (this->func != nullptr) {
+                this->func(this);
+            }
+                
             else
                 this->print_help();
         }
-        return error(0,"");
+        return 0;
     } else {
          for (int i = 1; i < argc; i++) {
             std::string arg = argv[i];
 
             if (arg == "--version" || 
                 arg == "-v") {
-                    std::cout << "Version: " << this->version << "." << this->release << std::endl;
-                    return error(0,"success");
+                    std::cout << "Version: " << this->Version << "." << this->Release << std::endl;
+                    return 0;
             }
 
             if (arg == "--help" || 
                 arg == "-h") {
                     this->print_help();
-                    return error(0,"success");
+                    return 0;
             }
 
             if (argv[i][0] == '-') {
@@ -113,14 +138,14 @@ App::execute(int argc, char** argv)
     
 
     if (task_found) {
-        return task.func(args, flags);
+        return task.func(this);
     } else {
         if (this->func != nullptr)
-            this->func();
+            this->func(this);
         else
             print_help();
         
-        return error(0,"");
+        return 0;
     }
 }
 
