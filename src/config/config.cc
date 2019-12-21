@@ -47,3 +47,30 @@ get(string variable, string dflt)
 }
 
 
+
+
+string
+Config::
+get(string variable)
+{
+    ifstream fptr;
+    fptr.open(this->filename);
+    if (fptr.good()) {
+        string line;
+        while(getline(fptr, line)) {
+            int pos = line.find("=");
+            if (pos == string::npos) {
+                return "";
+            }
+
+            string var = trim(line.substr(0,pos));
+            if (var == variable) {
+                return trim(line.substr(pos + 1, line.length() ));
+            }
+            
+        }
+
+    }
+    return "";
+}
+

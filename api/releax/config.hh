@@ -9,6 +9,7 @@ private:
 public:
     Config(std::string filename);
     std::string get(std::string variable, std::string dflt);  
+    std::string get(std::string variable); 
 };
 
 #endif
