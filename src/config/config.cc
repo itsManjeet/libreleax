@@ -14,44 +14,36 @@ trim(const string& str)
     return str.substr(string_begin,string_range);
 }
 
-error
-Config::
-load_config(string file_name)
-{
-    this->file_prt.open(file_name);
 
-    if (file_prt.good()) {
-        return error(0,"");
-    } else {
-        return error(1,"error while loading config");
-    }
+Config::
+Config(std::string filename)
+{
+    this->filename = filename;
 }
 
 string
 Config::
-get_value_of(string variable)
+get(string variable, string dflt)
 {
-    string line;
-    while(getline(this->file_prt, line)) {
-        int pos = line.find("=");
-        if (pos == string::npos) {
-            return "";
+    ifstream fptr;
+    fptr.open(this->filename);
+    if (fptr.good()) {
+        string line;
+        while(getline(fptr, line)) {
+            int pos = line.find("=");
+            if (pos == string::npos) {
+                return dflt;
+            }
+
+            string var = trim(line.substr(0,pos));
+            if (var == variable) {
+                return trim(line.substr(pos + 1, line.length() ));
+            }
+            
         }
 
-        string var = trim(line.substr(0,pos));
-        if (var == variable) {
-            return trim(line.substr(pos + 1, line.length() ));
-        }
-        
     }
-
-    return "";
-}
-
-Config::
-~Config()
-{
-    this->file_prt.close();
+    return dflt;
 }
 
 

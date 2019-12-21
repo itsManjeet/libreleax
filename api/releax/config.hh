@@ -5,12 +5,10 @@
 
 class Config {
 private:
-    std::fstream file_prt;
+    std::string filename;
 public:
-    error load_config(std::string filename); 
-    std::string get_value_of(std::string variable);  
-
-    ~Config(); 
+    Config(std::string filename);
+    std::string get(std::string variable, std::string dflt);  
 };
 
 #endif
