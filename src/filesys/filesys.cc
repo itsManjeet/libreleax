@@ -1,4 +1,4 @@
-#include <releax/filesys.hh>
+#include "../../api/releax/filesys.hh"
 #include <sys/stat.h>
 
 #include <filesystem>
@@ -46,7 +46,6 @@ copy(std::string source,
 bool
 filesys::exist(std::string path)
 {
-
     struct stat sb;
     if (stat(path.c_str(), &sb) != -1)
         return true;
@@ -63,3 +62,21 @@ filesys::list_all(std::string path)
     }
     return all_content;
 }
+
+
+filesys::
+file::file(std::string loc)
+{
+    this->filename = loc;
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == 0) {
+        this->status = 0;
+        this->size = sb.st_size;
+        this->mode = sb.st_mode;
+        this->gid  = sb.st_gid;
+        this->uid  = sb.st_uid;
+    } else {
+        this->status = -1
+    }
+}
+
