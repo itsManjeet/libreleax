@@ -1,7 +1,7 @@
 #!/bin/sh
 
 CPP="g++"
-CPFLAGS="-fPIC -shared -I api/ -fpermissive `pkg-config --libs --cflags gtkmm-3.0` -lstdc++fs -std=c++17 -lcurl -Wno-write-strings"
+CPFLAGS="-fPIC -shared -I api/ -fpermissive -lstdc++fs -std=c++17 -lcurl -Wno-write-strings"
 [ -d build ] && rm -rf build
 
 mkdir -p build/{test,cache}
