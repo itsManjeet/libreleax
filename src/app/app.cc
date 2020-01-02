@@ -1,4 +1,10 @@
 #include <releax/app.hh>
+#include <releax/filesys.hh>
+
+App::~App()
+{
+    delete this->cfg;
+}
 
 App*
 App::name(std::string name)
@@ -164,4 +170,17 @@ std::string
 Sub::display()
 {
     return "    " + this->name + " " + this->usage  + "\t\t" + this->desc;
+}
+
+
+App*
+App::config_file(std::string file_loc)
+{
+    if (filesys::exist(file_loc)) {
+        this->cfg = new Config(file_loc);
+    } else {
+        std::cout << "Unable to file Configuration file" << std::endl;
+    }
+    
+    return this;
 }

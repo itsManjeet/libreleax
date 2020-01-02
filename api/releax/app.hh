@@ -34,6 +34,7 @@ public:
     std::vector<std::string> flags;
     std::vector<std::string> args;
 
+    ~App();
     App* name(std::string name);
     App* version(float version);
     App* release(char release);
@@ -50,6 +51,8 @@ public:
     App* author(std::string name,
                 std::string email,
                 std::string about);
+    
+    App* config_file(std::string file_loc);
 
     void print_help();
 
