@@ -1,19 +1,22 @@
 #include <releax/sys.hh>
+#include <errno.h>
+#include <unistd.h>
 
 std::string
 sys::execute(std::string cmd)
 {
-    std::array<char,128> buffer;
-    std::string result;
-    std::cout << "Executing : " << cmd << std::endl;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(),"r"),pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed");
-    }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-        std::cout << buffer.data();
-    }
+    std::cout << "Executing: " << cmd << std::endl;
+    int status = system(cmd.c_str());
+    std::cout << "Exit Code: " << status << std::endl;
+    return "";
+}
 
-    return result;
+int
+sys::execute(std::string cmd, 
+             std::string dir)
+{
+    std::cout << "Executing " << cmd << std::endl;
+    std::cout << "at " << dir << std::endl;
+    std::string cmpltcmd = "cd " + dir + " && " + cmd;
+    return system(cmpltcmd.c_str());
 }
