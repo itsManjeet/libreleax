@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 CPP="g++"
 CPFLAGS="-fPIC -shared -I api/ -fpermissive -lstdc++fs -std=c++17 -lcurl -Wno-write-strings"
