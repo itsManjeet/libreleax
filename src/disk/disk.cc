@@ -1,10 +1,18 @@
 #include <releax/disk.hh>
 #include <releax/filesys.hh>
 #include <releax/sys.hh>
-#include <filesystem>
 #include <cstdlib>
 
-namespace fs = std::filesystem;
+#ifdef __GNUC__
+	#include <features.h>
+	#if __GNUC_PREREQ(8,0)
+		#include <filesystem>
+		namespace fs = std::filesystem
+	#else
+		#include <experimental/filesystem>
+		namespace fs = std::experimental::filesystem;
+	#endif
+#endif
 
 std::list<std::string>
 disk::get_all_part()

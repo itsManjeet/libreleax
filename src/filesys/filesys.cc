@@ -1,9 +1,16 @@
 #include "../../api/releax/filesys.hh"
 #include <sys/stat.h>
 
-#include <filesystem>
-
-namespace fs = std::filesystem;
+#ifdef __GNUC__
+	#include <features.h>
+	#if __GNUC_PREREQ(8,0)
+		#include <filesystem>
+		namespace fs = std::filesystem
+	#else
+		#include <experimental/filesystem>
+		namespace fs = std::experimental::filesystem;
+	#endif
+#endif
 
 int
 filesys::makedir(std::string path, mode_t mode)
