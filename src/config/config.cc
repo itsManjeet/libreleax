@@ -3,6 +3,7 @@
 using namespace std;
 
 string
+Config::
 trim(const string& str)
 {
     const auto string_begin = str.find_first_not_of(" \t");
