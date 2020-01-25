@@ -4,6 +4,7 @@ int
 Config::set(std::string variable,
             std::string value)
 {
+    /*
     std::ifstream infile(this->filename);
     if (!infile.good()) {
         return -5;
@@ -21,13 +22,13 @@ Config::set(std::string variable,
                 std::string tmp_var = this->trim(line.substr(0,line.find("=")));
                 if (tmp_var == variable) {
                     std::string input_line = variable + " = " + value;
-                    outfile.write(input_line,input_line.size());
+                    outfile.write(input_line.c_str(),input_line.size());
                     varfound = true;
                 } else {
-                    outfile.write(line,line.size());
+                    outfile.write(line.c_str(),line.size());
                 }
             } else {
-                outfile.write(line,line.size());
+                outfile.write(line.c_str(),line.size());
             }
 
         }
@@ -36,7 +37,7 @@ Config::set(std::string variable,
 
     if (!varfound) {
         std::string input_line = variable + " = " + value;
-        outfile.write(input_line,input_line.size());
+        outfile.write(input_line.c_str(),input_line.size());
     }
 
     outfile.close();
@@ -44,6 +45,6 @@ Config::set(std::string variable,
 
     filesys::copy(this->filename, this->filename + ".old");
     filesys::copy(this->filename + ".new", this->filename);
-
+    */
     return 0;
 }
