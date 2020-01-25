@@ -44,3 +44,33 @@ download(std::string url,
         fclose(fptr);
     }
 }
+
+void
+Http::
+set_usrpwd(std::string usrpwd)
+{
+    curl_easy_setopt(this->curl,CURLOPT_USERPWD, usrpwd.c_str());
+}
+
+
+size_t 
+get_write_func(void  *ptr,
+               size_t size,
+               size_t nmemb,
+               std::string* data)
+{
+    data->append((char*)ptr, size * nmemb);
+    return size * nmemb;
+}
+
+response
+Http::get(std::string url)
+{
+    std::string header, data;
+    curl_easy_setopt(this->curl,CURLOPT_URL, url.c_str());
+    curl_easy_setopt(this->curl, CURLOPT_WRITEFUNCTION, get_write_func);
+    curl_easy_setopt(this->curl, CURLOPT_WRITEDATA, &data);
+    curl_easy_setopt(this->curl, CURLOPT_HEADERDATA, &header);
+    curl_easy_perform(this->curl);
+    return response(data,header);
+}
