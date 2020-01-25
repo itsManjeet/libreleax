@@ -10,7 +10,7 @@ for lib in src/* ; do
     echo "Building $(basename $lib)"
     for f in $lib/*.cc ; do
         echo "    CC $(basename ${f%.*})"
-        $CPP -c $f -o build/cache/$(basename ${f%.*}).o $CPFLAGS
+        $CPP -c $f -o build/cache/$(basename ${f%.*}).o $CPFLAGS `pkg-config --cflags --libs libnotify`
         if [[ $? != 0 ]] ; then 
             echo "\n[Error $?]: while building $f"
             exit 1
